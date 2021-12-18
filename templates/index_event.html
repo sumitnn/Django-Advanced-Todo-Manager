@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- main content starts here -->
+{% for i in q %}
+<div class="row mt-4">
+    <div class="col-md-4 mx-auto">
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="{{i.image.url}}" class="img-fluid rounded-start" alt="event-image">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">{{i.event_name}}</h5>
+                  <h6 class="card-text">{{i.location}}</h6>
+                  <p class="card-text">{{i.data}}</p>
+                  <small>Uploaded on {{i.time}}</small>
+                  {% if i.is_liked %}
+                  <p class="card-text"><small class="text-muted">
+                      <a href="{% url 'change' i.id %}"><i class="fas fa-heart clr"></i></a></small> &nbsp;&nbsp;&nbsp;&nbsp;
+                      <small class="text-muted "><i class="far fa-comments con"></i></small>     
+                    </p>
+                    {% else%}
+                    <p class="card-text"><small class="text-muted">
+                        <a href="{% url 'change' i.id %}"><i class="far fa-heart clr"></i></a></small> &nbsp;&nbsp;&nbsp;&nbsp;     
+                        <small class="text-muted "><i class="far fa-comments con"></i></small>
+                      </p>
+                    {% endif%}
+                    {% if i.is_comnt %}
+                    <input type="text" class="form-control">
+                    {% else %}
+                    <input type="text" class="form-control">
+                    {% endif%}
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

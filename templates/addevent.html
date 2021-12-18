@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class='col-md-5 mx-auto'>
+        <form method='POST' enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">{{form.event_name.label_tag}}</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="event_name">
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label">{{form.data.label_tag}}</label>
+              <input type="text" class="form-control" id="exampleInputPassword1" name="data">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">{{form.location.label_tag}}</label>
+                <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="location">
+              </div>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">{{form.image.label_tag}}</label>
+                <input type="file" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="image">
+              </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+    </div>
+{% endblock %}
