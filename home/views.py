@@ -23,23 +23,25 @@ def loginn(request):
         u = request.POST.get('username')
         p = request.POST.get('password')
         user = authenticate(username=u, password=p)
-        print(user)
         if user is not None:
             login(request, user)
             messages.success(request, 'Login successfully.')
             return redirect('home')
         else:
+            form = AuthenticationForm()
             ctx = {
                 'form': form
             }
             messages.error(request, 'Invalid Credential.')
             return render(request, 'login.html', ctx)
-
-    form = AuthenticationForm()
-    ctx = {
-        'form': form
-    }
-    return render(request, 'login.html', ctx)
+    if not request.user.is_authenticated:
+        form = AuthenticationForm()
+        ctx = {
+            'form': form
+        }
+        return render(request, 'login.html', ctx)
+    else:
+        return redirect('home')
 
 
 def signup(request):
@@ -55,11 +57,13 @@ def signup(request):
             }
             messages.error(request, 'Not created.')
             return render(request, 'signup.html', ctx)
-    form = UserCreationForm(label_suffix='')
-    ctx = {
-        'form': form
-    }
-    return render(request, 'signup.html', ctx)
+    if not request.user.is_authenticated:
+        form = UserCreationForm(label_suffix='')
+        ctx = {
+            'form': form
+        }
+        return render(request, 'signup.html', ctx)
+    return redirect('home')
 
 
 login_required(login_url='login/')

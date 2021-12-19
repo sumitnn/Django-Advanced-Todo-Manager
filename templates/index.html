@@ -53,9 +53,11 @@
                   <td>
                     <a href="{% url 'deletetodo' todo.id %}" class="" title="Delete">🗑️</a>
                     {% if todo.status == 'P' %}
-                    <a href="{% 'changetodo' todo.id todo.status %}" class="" title="Mark Completed">✅</a>
+                    <a href="{% url 'changetodo' todo.id todo.status %}" class="completeicon"
+                      title="Mark Completed">✅</a>
                     {% else %}
-                    <a href="{% 'changetodo' todo.id todo.status %}" class="" title="Mark Pending">⏲️</a>
+                    <a href="{% url 'changetodo' todo.id todo.status %}" class="completeicon"
+                      title="Mark Pending">⏲️</a>
                     {% endif %}
                   </td>
                 </tr>

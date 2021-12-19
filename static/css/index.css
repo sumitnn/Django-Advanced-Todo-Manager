@@ -1,0 +1,23 @@
+.mbox{
+width:40%;
+margin-right:10px;
+
+float: right;
+}
+.mtext{
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color:tomato;
+    text-align: right;
+    margin-right: 20px;
+    text-shadow: 2px ;
+}
+.dnav a:hover{
+    background-color: white;
+    color: black !important;
+    font-weight:bold;
+    border-radius: 7px;
+     transition:  ease-in-out .8s;
+
+}
