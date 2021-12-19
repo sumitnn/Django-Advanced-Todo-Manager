@@ -24,8 +24,7 @@ class TODO(models.Model):
     status = models.CharField(max_length=2, choices=status_choices)
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    priority = models.IntegerField(
-        max_length=2, choices=priority_choices, default=1)
+    priority = models.IntegerField(choices=priority_choices, default=1)
 
 
 class Addpost(models.Model):

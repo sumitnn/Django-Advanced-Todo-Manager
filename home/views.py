@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import *
 from .models import *
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 
@@ -21,16 +22,20 @@ def loginn(request):
     if request.method == 'POST':
         form = AuthenticationForm(request.POST)
         if form.is_valid():
+            print(form)
 
             user = authenticate(username=form.cleaned_data.get(
                 'username'), password=form.cleaned_data.get('password'))
+            print(user)
             if user is not None:
                 login(request, user)
+                messages.success(request, 'Login successfully.')
                 return redirect('home')
         else:
             ctx = {
                 'form': form
             }
+            messages.error(request, 'Invalid Credential.')
             return render(request, 'login.html', ctx)
 
     form = AuthenticationForm()
@@ -45,11 +50,13 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Create Account Successfully.')
             return redirect('login')
         else:
             ctx = {
                 'form': form
             }
+            messages.error(request, 'Not created.')
             return render(request, 'signup.html', ctx)
     form = UserCreationForm(label_suffix='')
     ctx = {
@@ -102,6 +109,7 @@ def home(request):
 
 def signout(request):
     logout(request)
+    messages.success(request, 'Logout Successfully.')
     return redirect('login')
 
 
