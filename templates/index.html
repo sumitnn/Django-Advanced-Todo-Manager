@@ -51,11 +51,11 @@
                     {% endif %} </td>
                   <td>{{todo.priority}}</td>
                   <td>
-                    <a href="/delete-todo/{{todo.id}}" class="" title="Delete">🗑️</a>
+                    <a href="{% url 'deletetodo' todo.id %}" class="" title="Delete">🗑️</a>
                     {% if todo.status == 'P' %}
-                    <a href="/change-status/{{todo.id}}/C" class="" title="Mark Completed">✅</a>
+                    <a href="{% 'changetodo' todo.id todo.status %}" class="" title="Mark Completed">✅</a>
                     {% else %}
-                    <a href="/change-status/{{todo.id}}/P" class="" title="Mark Pending">⏲️</a>
+                    <a href="{% 'changetodo' todo.id todo.status %}" class="" title="Mark Pending">⏲️</a>
                     {% endif %}
                   </td>
                 </tr>

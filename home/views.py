@@ -20,17 +20,14 @@ from django.contrib import messages
 
 def loginn(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request.POST)
-        if form.is_valid():
-            print(form)
-
-            user = authenticate(username=form.cleaned_data.get(
-                'username'), password=form.cleaned_data.get('password'))
-            print(user)
-            if user is not None:
-                login(request, user)
-                messages.success(request, 'Login successfully.')
-                return redirect('home')
+        u = request.POST.get('username')
+        p = request.POST.get('password')
+        user = authenticate(username=u, password=p)
+        print(user)
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Login successfully.')
+            return redirect('home')
         else:
             ctx = {
                 'form': form
@@ -48,7 +45,7 @@ def loginn(request):
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
-        if form.is_valid():
+        if form.is_valid:
             form.save()
             messages.success(request, 'Create Account Successfully.')
             return redirect('login')
@@ -73,7 +70,7 @@ def home(request):
         if request.method == 'POST':
             u = request.user
             form = TODOForm(request.POST)
-            if form.is_valid():
+            if form.is_valid:
                 todo = form.save(commit=False)
                 todo.user = u
                 todo.save()
@@ -113,16 +110,20 @@ def signout(request):
     return redirect('login')
 
 
-# def delete_todo(request, id):
-#     TODO.objects.get(pk=id).delete()
-#     return redirect('home')
+def delete_todo(request, id):
+    TODO.objects.get(pk=id).delete()
+    return redirect('home')
 
 
-# def change_todo(request, id, status):
-#     todo = TODO.objects.get(pk=id)
-#     todo.status = status
-#     todo.save()
-#     return redirect('home')
+def change_todo(request, id, status):
+    todo = TODO.objects.get(pk=id)
+    if status == 'C':
+        s = 'P'
+    else:
+        s = 'C'
+    todo.status = s
+    todo.save()
+    return redirect('home')
 
 
 # def homepage(request):
