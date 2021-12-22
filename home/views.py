@@ -6,16 +6,11 @@ from .forms import *
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+# ajax
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
 
 # Create your views here.
-
-
-# def home(request):
-#     if request.user.is_authenticated:
-#         user = request.user
-#         form = TODOForm()
-#         todos = TODO.objects.filter(user=user).order_by('priority')
-#         return render(request, 'index.html', context={'form': form, 'todos': todos})
 
 
 def loginn(request):
@@ -74,38 +69,30 @@ def home(request):
         if request.method == 'POST':
             u = request.user
             form = TODOForm(request.POST)
-            if form.is_valid:
+            if form.is_valid():
                 todo = form.save(commit=False)
                 todo.user = u
                 todo.save()
-                return redirect('home')
+                return JsonResponse({"status": 1})
+            else:
+                return JsonResponse({"status": 0})
+
         else:
             u = request.user
-            todos = TODO.objects.filter(user=u).order_by('-priority')
+            todos = TODO.objects.filter(user=u).exists()
             ctx = {
                 'form': TODOForm(),
-                'todos': todos
+                "todo": todos,
             }
-
             return render(request, 'index.html', ctx)
     else:
         return redirect('login')
 
 
-# def add_todo(request):
-#     if request.user.is_authenticated:
-#         user = request.user
-#         print(user)
-#         form = TODOForm(request.POST)
-#         if form.is_valid():
-#             print(form.cleaned_data)
-#             todo = form.save(commit=False)
-#             todo.user = user
-#             todo.save()
-#             print(todo)
-#             return redirect('home')
-#         else:
-#             return render(request, 'index.html', context={'form': form})
+def alltodo(request):
+    u = request.user
+    todos = TODO.objects.filter(user=u).order_by('-priority').values()
+    return JsonResponse({"data": list(todos)})
 
 
 def signout(request):
@@ -114,12 +101,15 @@ def signout(request):
     return redirect('login')
 
 
-def delete_todo(request, id):
+def delete_todo(request):
+    id = request.POST.get('sid')
     TODO.objects.get(pk=id).delete()
-    return redirect('home')
+    return JsonResponse({"status": 1})
 
 
-def change_todo(request, id, status):
+def change_todo(request):
+    id = request.POST.get('sid')
+    status = request.POST.get('sst')
     todo = TODO.objects.get(pk=id)
     if status == 'C':
         s = 'P'
@@ -127,28 +117,7 @@ def change_todo(request, id, status):
         s = 'C'
     todo.status = s
     todo.save()
-    return redirect('home')
-
-
-# def homepage(request):
-#     query = Addpost.objects.all()
-#     cont = {
-#         'q': query
-#     }
-#     return render(request, 'index.html', cont)
-
-
-# def addevent(request):
-#     if request.method == 'POST':
-#         f = AddForm(request.POST, request.FILES)
-#         if f.is_valid():
-#             f.save()
-#             return redirect('home')
-#     a = AddForm(label_suffix='')
-#     context = {
-#         'form': a
-#     }
-#     return render(request, 'addevent.html', context)
+    return JsonResponse({"status": 1})
 
 
 # def change(request, id):

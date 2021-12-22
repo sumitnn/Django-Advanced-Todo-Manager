@@ -8,9 +8,9 @@ class TODOForm(ModelForm):
         model = TODO
         fields = ['title', 'status', 'priority']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Title here...'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-            'priority': forms.Select(attrs={'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Title here...', 'id': 'title'}),
+            'status': forms.Select(attrs={'class': 'form-control', 'id': 'status'}),
+            'priority': forms.Select(attrs={'class': 'form-control', 'id': 'priority'}),
         }
 
 

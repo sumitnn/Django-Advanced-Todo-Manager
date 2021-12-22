@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <div>
-  <div class="container pt-4">
+  <div class="container  pt-4">
     <div class="row p-0 mt-4">
       <div class="col-lg-4 mx-auto shadow p-0">
         <div class="alert alert-info">
           <h2>Add New Todo</h2>
         </div>
         <div class="p-4">
-          <form method="POST">
+          <form method="POST" id="addtodoform">
             {% csrf_token %}
+
             {{form.as_p}}
             <hr>
             <input type="submit" value='ADD' class="btn btn-info">
@@ -19,51 +21,29 @@
 
       <div class="col">
         <div class="border">
-          {% if todos|length == 0 %}
-          <div class='p-4'>
-            <br>
-            <br>
-            <div class="alert alert-info text-center">
-              <p class="" style='font-size:30px;'>⚠️Write Your First TODO Here</p>
-            </div>
-          </div>
-          {% else %}
+          {% if todo %}
           <div>
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th>##</th>
                   <th>Title</th>
                   <th>Status</th>
                   <th>Priority</th>
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody>
-                {% for todo in todos %}
-                <tr>
-                  <th scope="row">{{forloop.counter}}</th>
-                  <td>{{todo.title}}</td>
-                  <td>{% if todo.status == 'C' %}
-                    ✅
-                    {% else %}
-                    ⏲️
-                    {% endif %} </td>
-                  <td>{{todo.priority}}</td>
-                  <td>
-                    <a href="{% url 'deletetodo' todo.id %}" class="" title="Delete">🗑️</a>
-                    {% if todo.status == 'P' %}
-                    <a href="{% url 'changetodo' todo.id todo.status %}" class="completeicon"
-                      title="Mark Completed">✅</a>
-                    {% else %}
-                    <a href="{% url 'changetodo' todo.id todo.status %}" class="completeicon"
-                      title="Mark Pending">⏲️</a>
-                    {% endif %}
-                  </td>
-                </tr>
-                {% endfor %}
+              <tbody id="tbody">
               </tbody>
             </table>
+          </div>
+          {% else %}
+          <div class='p-4'>
+            <br>
+            <br>
+            <div class="alert alert-info text-center">
+              <p class="text-danger" style='font-size:18px;'>⚠️ Write Your First TODO ....</p>
+            </div>
           </div>
           {% endif %}
         </div>
@@ -71,4 +51,126 @@
     </div>
   </div>
 </div>
+<hr />
+{% endblock %}
+
+{% block graph %}
+{% include 'include/graph.html' %}
+{% endblock %}
+{% block script %}
+<script>
+  $(document).ready(function () {
+    let output = '';
+    //call loadtodo
+    loadtodo();
+    //add new todo
+    $("#addtodoform").on("submit", function (e) {
+      e.preventDefault();
+      let token = $('input[name="csrfmiddlewaretoken"]').val();
+      let t = $("#title").val();
+      let s = $("#status").val();
+      let p = $("#priority").val();
+      $.ajax({
+        url: "{% url 'home' %}",
+        type: 'post',
+        data: {
+          csrfmiddlewaretoken: token,
+          title: t,
+          status: s,
+          priority: p,
+        },
+        success: function (res) {
+          if (res.status == 1) {
+            console.log("1");
+            //call loadtodo 
+            loadtodo();
+            $("#addtodoform")[0].reset();
+
+          }
+          else {
+            console.log("0");
+          }
+        }
+      });
+    });
+
+    //get ajax todo list
+    function loadtodo() {
+      output = '';
+      $.ajax({
+        type: 'GET',
+        url: "{% url 'alltodo' %}",
+        success: function (res) {
+          if (res.data) {
+            $.each(res.data, function (index, value) {
+              if (value.status == 'C') {
+                output += `<tr><th scope="row">${index + 1}</th><td>${value.title}</td>
+               <td>✅</td><td>${value.priority}</td><td><input type='button' value='🗑️' data-sid="${value.id}" class="btndelete" />
+              <input type='button' value='⏲️' data-sid="${value.id}" data-status="${value.status}" class="btnedit" />
+              </td></tr>`;
+              } else {
+                output += `<tr><th scope="row">${index + 1}</th><td>${value.title}</td>
+               <td>⏲️</td><td>${value.priority}</td><td><input type='button' value='🗑️' data-sid="${value.id}" class="btndelete" />
+              <input type='button' value='✅' data-sid="${value.id}" data-status="${value.status}" class="btnedit" />
+              </td></tr>`;
+
+              }
+            });
+            $("#tbody").html(output);
+          }
+        }
+      });
+
+
+    };
+
+    //delete todo
+    $("#tbody").on('click', '.btndelete', function () {
+
+      let token = $('input[name="csrfmiddlewaretoken"]').val();
+      let s = $(this).attr('data-sid');
+
+      $.ajax({
+        url: "{% url 'deletetodo' %}",
+        type: "post",
+        data: {
+          csrfmiddlewaretoken: token,
+          sid: s
+        },
+        success: function (res) {
+
+          loadtodo();
+        }
+      });
+
+    });
+
+    //change status
+    $("#tbody").on('click', '.btnedit', function () {
+
+      let token = $('input[name="csrfmiddlewaretoken"]').val();
+      let s = $(this).attr('data-sid');
+      let status = $(this).attr('data-status');
+
+      $.ajax({
+        url: "{% url 'changetodo' %}",
+        type: "post",
+        data: {
+          csrfmiddlewaretoken: token,
+          sid: s,
+          sst: status
+        },
+        success: function (res) {
+
+          loadtodo();
+        }
+      });
+
+    });
+
+
+
+  });
+
+</script>
 {% endblock %}
