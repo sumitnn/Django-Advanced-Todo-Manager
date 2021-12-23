@@ -120,6 +120,9 @@ def change_todo(request):
     return JsonResponse({"status": 1})
 
 
+def graph(request):
+    return render(request, 'include/graph.html')
+
 # def change(request, id):
 #     todo = Addpost.objects.get(pk=id)
 #     rev = todo.is_liked

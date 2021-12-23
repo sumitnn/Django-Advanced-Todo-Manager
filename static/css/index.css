@@ -21,3 +21,9 @@ float: right;
      transition:  ease-in-out .8s;
 
 }
+
+/* graph    */
+.graph-box{
+    margin-top: 30px !important;
+
+}
