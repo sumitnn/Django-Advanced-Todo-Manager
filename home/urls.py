@@ -13,5 +13,6 @@ urlpatterns = [
          change_todo, name='changetodo'),
     path('logout/', signout, name='signout'),
     path('graph-info/', graph, name='graph'),
+    path('graph-data/', graphdata, name='graphdata'),
 
 ]

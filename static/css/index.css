@@ -22,8 +22,12 @@ float: right;
 
 }
 
+/* overflow for table */
+
+
 /* graph    */
 .graph-box{
     margin-top: 30px !important;
 
 }
+

@@ -120,8 +120,29 @@ def change_todo(request):
     return JsonResponse({"status": 1})
 
 
+def graphdata(request):
+    u = request.user
+    complete = TODO.objects.filter(user=u, status='C').count()
+    pending = TODO.objects.filter(user=u, status='P').count()
+
+    data = {
+        'complete': complete,
+        'pending': pending
+    }
+    return JsonResponse(data)
+
+
 def graph(request):
-    return render(request, 'include/graph.html')
+    u = request.user
+    complete = TODO.objects.filter(user=u, status='C').count()
+    pending = TODO.objects.filter(user=u, status='P').count()
+
+    context = {
+        'complete': complete,
+        'pending': pending,
+        "total": complete+pending,
+    }
+    return render(request, 'include/graph.html', context)
 
 # def change(request, id):
 #     todo = Addpost.objects.get(pk=id)
