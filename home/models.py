@@ -35,3 +35,12 @@ class Addpost(models.Model):
     image = models.ImageField(upload_to='event_img/')
     is_liked = models.BooleanField(default=False)
     is_comnt = models.BooleanField(default=False)
+
+
+class AllRecord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.title

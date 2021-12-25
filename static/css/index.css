@@ -35,7 +35,7 @@ float: right;
 .my-custom-scrollbar {
 position: relative;
 height: 450px;
-overflow: hidden ;
+overflow: auto ;
 }
 .table-wrapper-scroll-y {
 display: block;
@@ -44,5 +44,13 @@ display: block;
 .my-custom-scrollbar-graph {
 position: relative;
 height: 150px;
-overflow: hidden;
+overflow: auto;
+}
+
+.my-custom-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.my-custom-scrollbar-graph::-webkit-scrollbar {
+    display: none;
 }

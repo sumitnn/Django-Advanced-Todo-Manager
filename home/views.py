@@ -69,10 +69,15 @@ def home(request):
         if request.method == 'POST':
             u = request.user
             form = TODOForm(request.POST)
+
+            data = request.POST["title"]+" Task Is Added.."
             if form.is_valid():
+
+                allrecord = AllRecord(title=data, user=request.user)
                 todo = form.save(commit=False)
                 todo.user = u
                 todo.save()
+                allrecord.save()
                 return JsonResponse({"status": 1})
             else:
                 return JsonResponse({"status": 0})
@@ -89,10 +94,16 @@ def home(request):
         return redirect('login')
 
 
+login_required(login_url='login/')
+
+
 def alltodo(request):
     u = request.user
     todos = TODO.objects.filter(user=u).order_by('-priority').values()
     return JsonResponse({"data": list(todos)})
+
+
+login_required(login_url='login/')
 
 
 def signout(request):
@@ -101,23 +112,41 @@ def signout(request):
     return redirect('login')
 
 
+login_required(login_url='login/')
+
+
 def delete_todo(request):
     id = request.POST.get('sid')
+    t = TODO.objects.get(pk=id)
+    data = t.title + " Task Is Deleted.."
+    allrecord = AllRecord(title=data, user=request.user)
     TODO.objects.get(pk=id).delete()
+    allrecord.save()
+
     return JsonResponse({"status": 1})
+
+
+login_required(login_url='login/')
 
 
 def change_todo(request):
     id = request.POST.get('sid')
     status = request.POST.get('sst')
     todo = TODO.objects.get(pk=id)
+    data = todo.title + " Task Is Updated.."
+
     if status == 'C':
         s = 'P'
     else:
         s = 'C'
     todo.status = s
     todo.save()
+    allrecord = AllRecord(title=data, user=request.user)
+    allrecord.save()
     return JsonResponse({"status": 1})
+
+
+login_required(login_url='login/')
 
 
 def graphdata(request):
@@ -132,37 +161,19 @@ def graphdata(request):
     return JsonResponse(data)
 
 
+login_required(login_url='login/')
+
+
 def graph(request):
     u = request.user
     complete = TODO.objects.filter(user=u, status='C').count()
     pending = TODO.objects.filter(user=u, status='P').count()
+    record = AllRecord.objects.filter(user=u).order_by('-date')
 
     context = {
         'complete': complete,
         'pending': pending,
         "total": complete+pending,
+        "allrecord": record
     }
     return render(request, 'include/graph.html', context)
-
-# def change(request, id):
-#     todo = Addpost.objects.get(pk=id)
-#     rev = todo.is_liked
-#     if rev == True:
-#         rev = False
-#     else:
-#         rev = True
-#     todo.is_liked = rev
-#     todo.save()
-#     return redirect('home')
-
-
-# def coments(request, id):
-#     todo = Addpost.objects.get(pk=id)
-#     rev = todo.is_comnt
-#     if rev == True:
-#         rev = False
-#     else:
-#         rev = True
-#     todo.is_comnt = rev
-#     todo.save()
-#     return redirect('home')

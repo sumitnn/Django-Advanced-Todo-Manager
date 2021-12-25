@@ -8,15 +8,19 @@
             <div class="card border-warning mb-3" style="max-width: 22rem;">
                 <div class="card-header bg-transparent border-warning fs-2">Information</div>
                 <div class="card-body text-success">
-                    <h5 class="card-title fs-3">Recently Activity</h5>
+                    <h5 class="card-title fs-3 text-warning">Recently Activity</h5>
                     <hr />
                     <div class="table-wrapper-scroll-y my-custom-scrollbar-graph">
-                        <p class="card-text">Some quick example text </p>
-                        <p class="card-text">Some quick example text </p>
-                        <p class="card-text">Some quick example text </p>
-                        <p class="card-text">Some quick example text </p>
-                        <p class="card-text">Some quick example text </p>
-                        <p class="card-text">Some quick example text </p>
+                        {% if allrecord %}
+                        {% for i in allrecord %}
+                        <p class="card-text text-capitalize text-info">{{i.title}}<br />
+                            <small>{{i.date|date:"M d, Y"}}</small>
+                        </p>
+
+                        {% endfor %}
+                        {% else %}
+                        <p class="card-text">No Activity.... </p>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -27,15 +31,15 @@
                 <div class="card-header bg-transparent border-success fs-2">Statistic</div>
                 <div class="card-body row text-center">
                     <div class="col-md-3 shadow p-3  bg-body rounded offset-1">
-                        <h1>Complete</h1>
+                        <h1 class="text-warning">Complete</h1>
                         <h3 class="text-center">{{complete}}</h3>
                     </div>
                     <div class="col-md-3 shadow p-3  bg-body rounded offset-1">
-                        <h1>Pending</h1>
+                        <h1 class="text-warning">Pending</h1>
                         <h3 class="text-center">{{pending}}</h3>
                     </div>
                     <div class="col-md-3 shadow p-3  bg-body rounded offset-1">
-                        <h1>Total</h1>
+                        <h1 class="text-warning">Total</h1>
                         <h3 class="text-center">{{total}}</h3>
                     </div>
 
